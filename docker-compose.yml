@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: uyinvest-postgres
+    environment:
+      POSTGRES_DB: uyinvest
+      POSTGRES_USER: uyinvest
+      POSTGRES_PASSWORD: uyinvest
+    ports:
+      - "5432:5432"
+    volumes:
+      - uyinvest_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  uyinvest_postgres_data:

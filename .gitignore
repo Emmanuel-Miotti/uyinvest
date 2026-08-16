@@ -1,0 +1,31 @@
+### Backend (Maven / Java) ###
+backend/target/
+backend/.github/modernize/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+### Frontend (Node) ###
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+### IDE ###
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Env / secrets ###
+.env
+.env.local
+*.env
+
+### Logs ###
+*.log
