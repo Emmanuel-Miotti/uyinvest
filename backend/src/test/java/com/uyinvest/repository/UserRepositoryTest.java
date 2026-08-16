@@ -3,6 +3,7 @@ package com.uyinvest.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.uyinvest.AbstractIntegrationTest;
 import com.uyinvest.entity.User;
 import com.uyinvest.entity.enums.Role;
 import org.junit.jupiter.api.Test;

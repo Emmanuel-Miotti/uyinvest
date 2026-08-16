@@ -2,6 +2,7 @@ package com.uyinvest.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.uyinvest.AbstractIntegrationTest;
 import com.uyinvest.entity.Portfolio;
 import com.uyinvest.entity.User;
 import com.uyinvest.entity.enums.Role;

@@ -1,4 +1,4 @@
-package com.uyinvest.repository;
+package com.uyinvest;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
