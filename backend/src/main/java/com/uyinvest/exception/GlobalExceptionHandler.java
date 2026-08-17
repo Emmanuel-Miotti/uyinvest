@@ -46,6 +46,11 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", "Invalid email or password", request);
     }
 
+    @ExceptionHandler(MarketDataUnavailableException.class)
+    public ResponseEntity<ErrorResponse> handleMarketDataUnavailable(MarketDataUnavailableException ex, HttpServletRequest request) {
+        return build(HttpStatus.SERVICE_UNAVAILABLE, "MARKET_DATA_UNAVAILABLE", ex.getMessage(), request);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "An unexpected error occurred", request);

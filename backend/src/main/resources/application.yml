@@ -23,6 +23,11 @@ jwt:
   secret: ${JWT_SECRET:local-dev-only-secret-key-please-override-in-every-other-environment}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
+market-data:
+  provider: ${MARKET_DATA_PROVIDER:mock}
+  base-url: ${MARKET_DATA_BASE_URL:https://finnhub.io/api/v1}
+  api-key: ${MARKET_DATA_API_KEY:}
+
 server:
   port: 8080
 
