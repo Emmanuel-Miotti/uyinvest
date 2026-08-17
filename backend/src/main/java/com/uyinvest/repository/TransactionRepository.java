@@ -1,5 +1,6 @@
 package com.uyinvest.repository;
 
+import com.uyinvest.entity.Asset;
 import com.uyinvest.entity.Transaction;
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,6 +16,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     List<Transaction> findByPortfolioIdOrderByTransactionDateDesc(UUID portfolioId);
 
     List<Transaction> findByPortfolioIdAndAssetId(UUID portfolioId, UUID assetId);
+
+    @Query("SELECT DISTINCT t.asset FROM Transaction t WHERE t.portfolio.id = :portfolioId")
+    List<Asset> findDistinctAssetsByPortfolioId(@Param("portfolioId") UUID portfolioId);
 
     @Query("""
             SELECT COALESCE(SUM(

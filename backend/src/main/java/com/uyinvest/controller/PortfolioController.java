@@ -1,8 +1,12 @@
 package com.uyinvest.controller;
 
 import com.uyinvest.dto.request.PortfolioRequest;
+import com.uyinvest.dto.response.AllocationResponse;
+import com.uyinvest.dto.response.PerformancePointResponse;
 import com.uyinvest.dto.response.PortfolioResponse;
+import com.uyinvest.dto.response.PortfolioSummaryResponse;
 import com.uyinvest.security.CustomUserDetails;
+import com.uyinvest.service.PortfolioDashboardService;
 import com.uyinvest.service.PortfolioService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
+    private final PortfolioDashboardService portfolioDashboardService;
 
     @GetMapping
     public ResponseEntity<List<PortfolioResponse>> getAll(@AuthenticationPrincipal CustomUserDetails principal) {
@@ -56,5 +61,23 @@ public class PortfolioController {
     public ResponseEntity<Void> delete(@AuthenticationPrincipal CustomUserDetails principal, @PathVariable UUID id) {
         portfolioService.delete(principal.getId(), id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/summary")
+    public ResponseEntity<PortfolioSummaryResponse> getSummary(
+            @AuthenticationPrincipal CustomUserDetails principal, @PathVariable UUID id) {
+        return ResponseEntity.ok(portfolioDashboardService.getSummary(principal.getId(), id));
+    }
+
+    @GetMapping("/{id}/allocation")
+    public ResponseEntity<List<AllocationResponse>> getAllocation(
+            @AuthenticationPrincipal CustomUserDetails principal, @PathVariable UUID id) {
+        return ResponseEntity.ok(portfolioDashboardService.getAllocation(principal.getId(), id));
+    }
+
+    @GetMapping("/{id}/performance")
+    public ResponseEntity<List<PerformancePointResponse>> getPerformance(
+            @AuthenticationPrincipal CustomUserDetails principal, @PathVariable UUID id) {
+        return ResponseEntity.ok(portfolioDashboardService.getPerformance(principal.getId(), id));
     }
 }
