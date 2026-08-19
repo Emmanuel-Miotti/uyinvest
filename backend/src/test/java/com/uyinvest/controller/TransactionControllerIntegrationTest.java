@@ -141,6 +141,41 @@ class TransactionControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void sellsWithinAvailableQuantity() throws Exception {
+        String adminToken = registerAndGetToken("admin2b@example.com");
+        promoteToAdmin("admin2b@example.com");
+        AssetResponse asset = createAsset(adminToken, "NFLX", true);
+
+        String userToken = registerAndGetToken("trader2b@example.com");
+        PortfolioResponse portfolio = createPortfolio(userToken);
+
+        TransactionRequest buyRequest = new TransactionRequest(
+                asset.id(), TransactionType.BUY, new BigDecimal("10"), new BigDecimal("100.00"),
+                BigDecimal.ZERO, "USD", Instant.now());
+        mockMvc.perform(post("/api/v1/portfolios/" + portfolio.id() + "/transactions")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(buyRequest)))
+                .andExpect(status().isCreated());
+
+        TransactionRequest sellRequest = new TransactionRequest(
+                asset.id(), TransactionType.SELL, new BigDecimal("4"), new BigDecimal("120.00"),
+                BigDecimal.ZERO, "USD", Instant.now());
+        mockMvc.perform(post("/api/v1/portfolios/" + portfolio.id() + "/transactions")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(sellRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.type").value("SELL"))
+                .andExpect(jsonPath("$.quantity").value(4));
+
+        mockMvc.perform(get("/api/v1/portfolios/" + portfolio.id() + "/transactions")
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
     void rejectsTradingInactiveAsset() throws Exception {
         String adminToken = registerAndGetToken("admin3@example.com");
         promoteToAdmin("admin3@example.com");
@@ -179,6 +214,28 @@ class TransactionControllerIntegrationTest extends AbstractIntegrationTest {
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+    }
+
+    @Test
+    void rejectsInvalidPriceWithOtherwiseValidRequest() throws Exception {
+        String adminToken = registerAndGetToken("admin4b@example.com");
+        promoteToAdmin("admin4b@example.com");
+        AssetResponse asset = createAsset(adminToken, "META", true);
+
+        String userToken = registerAndGetToken("trader4b@example.com");
+        PortfolioResponse portfolio = createPortfolio(userToken);
+
+        TransactionRequest invalidRequest = new TransactionRequest(
+                asset.id(), TransactionType.BUY, BigDecimal.TEN, BigDecimal.ZERO,
+                BigDecimal.ZERO, "USD", Instant.now());
+
+        mockMvc.perform(post("/api/v1/portfolios/" + portfolio.id() + "/transactions")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("price")));
     }
 
     @Test
