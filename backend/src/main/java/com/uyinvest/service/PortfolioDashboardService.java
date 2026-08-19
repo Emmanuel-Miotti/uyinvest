@@ -59,7 +59,7 @@ public class PortfolioDashboardService {
 
         return valueByType.entrySet().stream()
                 .map(entry -> new AllocationResponse(entry.getKey(), entry.getValue(), percentageOf(entry.getValue(), totalValue)))
-                .sorted(Comparator.comparing(AllocationResponse::currentValue).reversed())
+                .sorted(Comparator.comparing(AllocationResponse::assetType))
                 .toList();
     }
 

@@ -5,6 +5,7 @@ import { portfoliosApi } from '@/api/portfolios'
 import { transactionsApi } from '@/api/transactions'
 import { dividendsApi } from '@/api/dividends'
 import { Card, CardContent, CardHeader } from '@/components/ui/Card'
+import { TableContainer } from '@/components/ui/Table'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -130,32 +131,34 @@ export function PortfolioDetailPage() {
                 <EmptyState title="No transactions yet" description="Register a buy or sell to see it here." />
               )}
               {transactionsQuery.data && transactionsQuery.data.length > 0 && (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
-                      <th className="pb-2 font-medium">Date</th>
-                      <th className="pb-2 font-medium">Asset</th>
-                      <th className="pb-2 font-medium">Type</th>
-                      <th className="pb-2 font-medium text-right">Quantity</th>
-                      <th className="pb-2 font-medium text-right">Price</th>
-                      <th className="pb-2 font-medium text-right">Commission</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transactionsQuery.data.map((tx) => (
-                      <tr key={tx.id} className="border-b border-border-subtle last:border-0">
-                        <td className="py-2 text-slate-500">{formatDate(tx.transactionDate)}</td>
-                        <td className="py-2 font-medium text-slate-700">{tx.asset.symbol}</td>
-                        <td className="py-2">
-                          <Badge tone={tx.type === 'BUY' ? 'success' : 'danger'}>{tx.type}</Badge>
-                        </td>
-                        <td className="py-2 text-right text-slate-600">{tx.quantity}</td>
-                        <td className="py-2 text-right text-slate-600">{formatCurrency(tx.price, tx.currency)}</td>
-                        <td className="py-2 text-right text-slate-600">{formatCurrency(tx.commission, tx.currency)}</td>
+                <TableContainer>
+                  <table className="w-full min-w-[620px] text-sm">
+                    <thead>
+                      <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
+                        <th className="pb-2 font-medium">Date</th>
+                        <th className="pb-2 font-medium">Asset</th>
+                        <th className="pb-2 font-medium">Type</th>
+                        <th className="pb-2 font-medium text-right">Quantity</th>
+                        <th className="pb-2 font-medium text-right">Price</th>
+                        <th className="pb-2 font-medium text-right">Commission</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {transactionsQuery.data.map((tx) => (
+                        <tr key={tx.id} className="border-b border-border-subtle last:border-0">
+                          <td className="py-2 text-slate-500">{formatDate(tx.transactionDate)}</td>
+                          <td className="py-2 font-medium text-slate-700">{tx.asset.symbol}</td>
+                          <td className="py-2">
+                            <Badge tone={tx.type === 'BUY' ? 'success' : 'danger'}>{tx.type}</Badge>
+                          </td>
+                          <td className="py-2 text-right text-slate-600">{tx.quantity}</td>
+                          <td className="py-2 text-right text-slate-600">{formatCurrency(tx.price, tx.currency)}</td>
+                          <td className="py-2 text-right text-slate-600">{formatCurrency(tx.commission, tx.currency)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </TableContainer>
               )}
             </>
           )}
@@ -168,24 +171,26 @@ export function PortfolioDetailPage() {
                 <EmptyState title="No dividends yet" description="Register a dividend payment to see it here." />
               )}
               {dividendsQuery.data && dividendsQuery.data.length > 0 && (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
-                      <th className="pb-2 font-medium">Payment date</th>
-                      <th className="pb-2 font-medium">Asset</th>
-                      <th className="pb-2 font-medium text-right">Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dividendsQuery.data.map((dividend) => (
-                      <tr key={dividend.id} className="border-b border-border-subtle last:border-0">
-                        <td className="py-2 text-slate-500">{formatDate(dividend.paymentDate)}</td>
-                        <td className="py-2 font-medium text-slate-700">{dividend.asset.symbol}</td>
-                        <td className="py-2 text-right text-slate-600">{formatCurrency(dividend.amount, dividend.currency)}</td>
+                <TableContainer>
+                  <table className="w-full min-w-[420px] text-sm">
+                    <thead>
+                      <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
+                        <th className="pb-2 font-medium">Payment date</th>
+                        <th className="pb-2 font-medium">Asset</th>
+                        <th className="pb-2 font-medium text-right">Amount</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {dividendsQuery.data.map((dividend) => (
+                        <tr key={dividend.id} className="border-b border-border-subtle last:border-0">
+                          <td className="py-2 text-slate-500">{formatDate(dividend.paymentDate)}</td>
+                          <td className="py-2 font-medium text-slate-700">{dividend.asset.symbol}</td>
+                          <td className="py-2 text-right text-slate-600">{formatCurrency(dividend.amount, dividend.currency)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </TableContainer>
               )}
             </>
           )}

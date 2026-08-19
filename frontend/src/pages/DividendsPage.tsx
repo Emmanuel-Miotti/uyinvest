@@ -8,6 +8,7 @@ import { dividendsApi } from '@/api/dividends'
 import { assetsApi } from '@/api/assets'
 import { PortfolioSelector } from '@/components/PortfolioSelector'
 import { Card, CardContent } from '@/components/ui/Card'
+import { TableContainer } from '@/components/ui/Table'
 import { Button } from '@/components/ui/Button'
 import { Input, Label, Select } from '@/components/ui/Input'
 import { Modal } from '@/components/ui/Modal'
@@ -129,24 +130,26 @@ export function DividendsPage() {
             <EmptyState title="No dividends yet" description="Register a dividend payment to see it here." />
           )}
           {dividendsQuery.data && dividendsQuery.data.length > 0 && (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
-                  <th className="pb-2 font-medium">Payment date</th>
-                  <th className="pb-2 font-medium">Asset</th>
-                  <th className="pb-2 font-medium text-right">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dividendsQuery.data.map((dividend) => (
-                  <tr key={dividend.id} className="border-b border-border-subtle last:border-0">
-                    <td className="py-2 text-slate-500">{formatDate(dividend.paymentDate)}</td>
-                    <td className="py-2 font-medium text-slate-700">{dividend.asset.symbol}</td>
-                    <td className="py-2 text-right text-slate-600">{formatCurrency(dividend.amount, dividend.currency)}</td>
+            <TableContainer>
+              <table className="w-full min-w-[420px] text-sm">
+                <thead>
+                  <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
+                    <th className="pb-2 font-medium">Payment date</th>
+                    <th className="pb-2 font-medium">Asset</th>
+                    <th className="pb-2 font-medium text-right">Amount</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {dividendsQuery.data.map((dividend) => (
+                    <tr key={dividend.id} className="border-b border-border-subtle last:border-0">
+                      <td className="py-2 text-slate-500">{formatDate(dividend.paymentDate)}</td>
+                      <td className="py-2 font-medium text-slate-700">{dividend.asset.symbol}</td>
+                      <td className="py-2 text-right text-slate-600">{formatCurrency(dividend.amount, dividend.currency)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableContainer>
           )}
         </CardContent>
       </Card>

@@ -10,26 +10,46 @@ const links = [
   { to: '/goals', label: 'Goals' },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  open: boolean
+  onNavigate: () => void
+}
+
+export function Sidebar({ open, onNavigate }: SidebarProps) {
   return (
-    <aside className="hidden w-56 shrink-0 border-r border-border-subtle bg-surface md:block">
-      <div className="flex h-14 items-center px-5 text-lg font-semibold text-brand-700">UYInvest</div>
-      <nav className="flex flex-col gap-0.5 px-3">
-        {links.map((link) => (
-          <NavLink
-            key={link.to}
-            to={link.to}
-            className={({ isActive }) =>
-              cn(
-                'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-100',
-              )
-            }
-          >
-            {link.label}
-          </NavLink>
-        ))}
-      </nav>
-    </aside>
+    <>
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-slate-900/40 md:hidden"
+          onClick={onNavigate}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 w-56 shrink-0 border-r border-border-subtle bg-surface transition-transform duration-200 md:static md:z-auto md:translate-x-0',
+          open ? 'translate-x-0' : '-translate-x-full',
+        )}
+      >
+        <div className="flex h-14 items-center px-5 text-lg font-semibold text-brand-700">UYInvest</div>
+        <nav className="flex flex-col gap-0.5 px-3">
+          {links.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              onClick={onNavigate}
+              className={({ isActive }) =>
+                cn(
+                  'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-100',
+                )
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+    </>
   )
 }

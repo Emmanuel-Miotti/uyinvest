@@ -5,6 +5,7 @@ import { Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tool
 import { portfoliosApi } from '@/api/portfolios'
 import { transactionsApi } from '@/api/transactions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { TableContainer } from '@/components/ui/Table'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ErrorState } from '@/components/ui/ErrorState'
@@ -12,8 +13,17 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { PortfolioSelector } from '@/components/PortfolioSelector'
 import { cn, formatCurrency, formatDate, formatPercentage } from '@/lib/utils'
+import type { AssetType } from '@/types'
 
-const ALLOCATION_COLORS = ['#3466ff', '#598cff', '#8eb4ff', '#16a34a', '#f59e0b', '#dc2626']
+// Fixed entity->color mapping (never by rank) from a CVD-validated categorical palette.
+const ASSET_TYPE_COLORS: Record<AssetType, string> = {
+  STOCK: '#2a78d6',
+  ETF: '#eb6834',
+  BOND: '#1baf7a',
+  FUND: '#eda100',
+  CRYPTO: '#e87ba4',
+  CASH: '#008300',
+}
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -162,8 +172,8 @@ export function DashboardPage() {
                     paddingAngle={allocationQuery.data.length > 1 ? 2 : 0}
                     isAnimationActive={false}
                   >
-                    {allocationQuery.data.map((entry, index) => (
-                      <Cell key={entry.assetType} fill={ALLOCATION_COLORS[index % ALLOCATION_COLORS.length]} />
+                    {allocationQuery.data.map((entry) => (
+                      <Cell key={entry.assetType} fill={ASSET_TYPE_COLORS[entry.assetType]} />
                     ))}
                   </Pie>
                   <Tooltip formatter={(value) => formatCurrency(Number(value), currency)} />
@@ -212,30 +222,32 @@ export function DashboardPage() {
             <EmptyState title="No transactions yet" description="Buy or sell an asset to see it here." />
           )}
           {transactionsQuery.data && transactionsQuery.data.length > 0 && (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
-                  <th className="pb-2 font-medium">Date</th>
-                  <th className="pb-2 font-medium">Asset</th>
-                  <th className="pb-2 font-medium">Type</th>
-                  <th className="pb-2 font-medium text-right">Quantity</th>
-                  <th className="pb-2 font-medium text-right">Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactionsQuery.data.slice(0, 5).map((tx) => (
-                  <tr key={tx.id} className="border-b border-border-subtle last:border-0">
-                    <td className="py-2 text-slate-500">{formatDate(tx.transactionDate)}</td>
-                    <td className="py-2 font-medium text-slate-700">{tx.asset.symbol}</td>
-                    <td className="py-2">
-                      <Badge tone={tx.type === 'BUY' ? 'success' : 'danger'}>{tx.type}</Badge>
-                    </td>
-                    <td className="py-2 text-right text-slate-600">{tx.quantity}</td>
-                    <td className="py-2 text-right text-slate-600">{formatCurrency(tx.price, tx.currency)}</td>
+            <TableContainer>
+              <table className="w-full min-w-[520px] text-sm">
+                <thead>
+                  <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
+                    <th className="pb-2 font-medium">Date</th>
+                    <th className="pb-2 font-medium">Asset</th>
+                    <th className="pb-2 font-medium">Type</th>
+                    <th className="pb-2 font-medium text-right">Quantity</th>
+                    <th className="pb-2 font-medium text-right">Price</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {transactionsQuery.data.slice(0, 5).map((tx) => (
+                    <tr key={tx.id} className="border-b border-border-subtle last:border-0">
+                      <td className="py-2 text-slate-500">{formatDate(tx.transactionDate)}</td>
+                      <td className="py-2 font-medium text-slate-700">{tx.asset.symbol}</td>
+                      <td className="py-2">
+                        <Badge tone={tx.type === 'BUY' ? 'success' : 'danger'}>{tx.type}</Badge>
+                      </td>
+                      <td className="py-2 text-right text-slate-600">{tx.quantity}</td>
+                      <td className="py-2 text-right text-slate-600">{formatCurrency(tx.price, tx.currency)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableContainer>
           )}
         </CardContent>
       </Card>

@@ -6,6 +6,7 @@ import { assetsApi } from '@/api/assets'
 import type { Asset, AssetType } from '@/types'
 import { useAuthStore } from '@/stores/authStore'
 import { Card, CardContent } from '@/components/ui/Card'
+import { TableContainer } from '@/components/ui/Table'
 import { Button } from '@/components/ui/Button'
 import { Input, Label, Select } from '@/components/ui/Input'
 import { Modal } from '@/components/ui/Modal'
@@ -107,38 +108,40 @@ export function AssetsPage() {
           )}
           {assetsQuery.data && assetsQuery.data.content.length > 0 && (
             <>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
-                    <th className="pb-2 font-medium">Symbol</th>
-                    <th className="pb-2 font-medium">Name</th>
-                    <th className="pb-2 font-medium">Type</th>
-                    <th className="pb-2 font-medium">Currency</th>
-                    <th className="pb-2 font-medium">Status</th>
-                    {isAdmin && <th className="pb-2 font-medium" />}
-                  </tr>
-                </thead>
-                <tbody>
-                  {assetsQuery.data.content.map((asset) => (
-                    <tr key={asset.id} className="border-b border-border-subtle last:border-0">
-                      <td className="py-2 font-medium text-slate-700">{asset.symbol}</td>
-                      <td className="py-2 text-slate-600">{asset.name}</td>
-                      <td className="py-2 text-slate-600">{asset.type}</td>
-                      <td className="py-2 text-slate-600">{asset.currency}</td>
-                      <td className="py-2">
-                        <Badge tone={asset.active ? 'success' : 'neutral'}>{asset.active ? 'Active' : 'Inactive'}</Badge>
-                      </td>
-                      {isAdmin && (
-                        <td className="py-2 text-right">
-                          <Button size="sm" variant="secondary" onClick={() => openEdit(asset)}>
-                            Edit
-                          </Button>
-                        </td>
-                      )}
+              <TableContainer>
+                <table className="w-full min-w-[560px] text-sm">
+                  <thead>
+                    <tr className="border-b border-border-subtle text-left text-xs uppercase text-slate-400">
+                      <th className="pb-2 font-medium">Symbol</th>
+                      <th className="pb-2 font-medium">Name</th>
+                      <th className="pb-2 font-medium">Type</th>
+                      <th className="pb-2 font-medium">Currency</th>
+                      <th className="pb-2 font-medium">Status</th>
+                      {isAdmin && <th className="pb-2 font-medium" />}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {assetsQuery.data.content.map((asset) => (
+                      <tr key={asset.id} className="border-b border-border-subtle last:border-0">
+                        <td className="py-2 font-medium text-slate-700">{asset.symbol}</td>
+                        <td className="py-2 text-slate-600">{asset.name}</td>
+                        <td className="py-2 text-slate-600">{asset.type}</td>
+                        <td className="py-2 text-slate-600">{asset.currency}</td>
+                        <td className="py-2">
+                          <Badge tone={asset.active ? 'success' : 'neutral'}>{asset.active ? 'Active' : 'Inactive'}</Badge>
+                        </td>
+                        {isAdmin && (
+                          <td className="py-2 text-right">
+                            <Button size="sm" variant="secondary" onClick={() => openEdit(asset)}>
+                              Edit
+                            </Button>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TableContainer>
 
               <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
                 <span>
