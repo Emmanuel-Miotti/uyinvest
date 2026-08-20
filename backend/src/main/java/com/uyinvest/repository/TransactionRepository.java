@@ -5,6 +5,7 @@ import com.uyinvest.entity.Transaction;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +14,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     List<Transaction> findByPortfolioId(UUID portfolioId);
 
+    @EntityGraph(attributePaths = "asset")
     List<Transaction> findByPortfolioIdOrderByTransactionDateDesc(UUID portfolioId);
 
     List<Transaction> findByPortfolioIdAndAssetId(UUID portfolioId, UUID assetId);
